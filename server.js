@@ -4,6 +4,7 @@ const logger = require('./middlwares/logger');
 const morgan = require('morgan');
 const connectDB = require('./config/db');
 const colors = require('colors');
+const errorHandler = require('./middlwares/error');
 
 // Load env vars
 dotEnv.config({path: './config/config.env'});
@@ -12,6 +13,9 @@ dotEnv.config({path: './config/config.env'});
 connectDB();
 
 const app = express();
+
+// Body Parser middleware
+app.use(express.json());
 
 // Dev logging middlware (just in dev environnement)
 if (process.env.NODE_ENV === 'development') {
@@ -23,7 +27,7 @@ if (process.env.NODE_ENV === 'development') {
 
 const routes = require('./routes/routes.js');
 app.use('/api/v1/bootcamps', routes);
-
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {
