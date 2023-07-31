@@ -5,13 +5,24 @@ const errorHandler = (err, req, res, next) => {
     error.message = err.message; // si je n'ai pas customisé le message de l'objet error prend le message de err (original object)
     
     // Log to console for Dev porposes
-    console.log(err.stack.red)
+    console.log(err.errors)
 
     // Mongoose bad objectId
     // response when we have an err specific (want to customize it with codeStauts and message)
     if (err.name ==='CastError') {
         const message = `Resource not found with id: ${err.value}`; // req.params.id == err.value
         error = new ErrorResponse(message, 404); // customize the error message and code status
+    }
+    // Mongoose duplicated field value
+    if (err.code === 11000) {
+        const message = `Duplicated field value entered`;
+        error = new ErrorResponse(message, 400);
+    }
+
+    // Mongoose validation error
+    if (err.name === 'ValidationError') {
+        const message = Object.values(err.errors).map(val => val.message); // pour extraire jeste les values de messages
+        error = new ErrorResponse(message, 400);
     }
     
     // ... je peux ajouter et customiser n'importe quel type d'erreur en ajoutant le if et le nom de l'erreur comme les lignes (10,11,12,13)
