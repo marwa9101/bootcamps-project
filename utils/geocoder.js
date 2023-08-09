@@ -1,4 +1,4 @@
-const NodeGeocoder = require('./node-geocoder');
+const NodeGeocoder = require('node-geocoder');
 
 const options = {
     provider: process.env.GEOCODER_PROVIDER,
