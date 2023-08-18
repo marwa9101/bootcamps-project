@@ -8,15 +8,47 @@ const Bootcamp = require('../models/Bootcamp Model')
     @access Public 
 */
 exports.getBootcamps = asyncHandler(async (req, res, next) => {
-    const queryString = JSON.stringify(req.query);
-    console.log(typeof(queryString));
-    queryString.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`)
-    const bootcamps = await Bootcamp.find();
+    // copy the object req.query to delete the select field from it if exists
+    let reqQuery = { ...req.query };
+
+    // set the select key word in an array fieldsToBeRemoved
+    fieldsToBeRemoved = ['select', 'sort'];
+
+    // iterate the array fieldsToBeRemoved and delete its elements from the reqQuery object
+    fieldsToBeRemoved.forEach(param => delete reqQuery[param]);
+
+    // convert the reqQuery to string to use the replace method
+    let queryString = JSON.stringify(reqQuery);
+
+    // replace the gt gte lt lte in by $gt $lt $gte ... etc.
+    queryString = queryString.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
+
+    // find the bootcamps depending on the query string
+    let query = Bootcamp.find(JSON.parse(queryString));  
+    // the syntax to use the select => select 
+    if (req.query.select) {
+        let fields = req.query.select.split(',').join(' ');
+        query = query.select(fields);
+    }
+
+    // sorting
+    if (req.query.sort) {
+        let sortBy = req.query.sort.split(',').join(' ');
+        query = query.sort(sortBy);
+    } else {
+        query = query.select('createdAt'); 
+    }
+
+
+    // find the bootcamps with sorting them depending on the req.query.sort
+    // find the bootcamps to be selected
+    const bootcamps = await query;
     res.status(200).json({
         success: true,
         count: bootcamps.length,
         data: bootcamps
-    });
+
+    });   
 });
 
 /*  @desc Get one bootcamp
