@@ -12,7 +12,7 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
     let reqQuery = { ...req.query };
 
     // set the select key word in an array fieldsToBeRemoved
-    fieldsToBeRemoved = ['select', 'sort'];
+    fieldsToBeRemoved = ['select', 'sort','page' ,'limit'];
 
     // iterate the array fieldsToBeRemoved and delete its elements from the reqQuery object
     fieldsToBeRemoved.forEach(param => delete reqQuery[param]);
@@ -24,7 +24,10 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
     queryString = queryString.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
 
     // find the bootcamps depending on the query string
-    let query = Bootcamp.find(JSON.parse(queryString));  
+    let query = Bootcamp.find(JSON.parse(queryString)).populate({
+        path: 'courses',
+        select: 'title description'
+    });  
     // the syntax to use the select => select 
     if (req.query.select) {
         let fields = req.query.select.split(',').join(' ');
@@ -36,16 +39,42 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
         let sortBy = req.query.sort.split(',').join(' ');
         query = query.sort(sortBy);
     } else {
-        query = query.select('createdAt'); 
+        query = query.sort('createdAt'); 
     }
+    // pagination
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 25; // 100 bootcamps by default
+    const startIndex = (page - 1) * limit;
+    const lastIndex = page * limit;
+    const total = await Bootcamp.countDocuments();
 
+    query = query.skip(startIndex).limit(limit)
 
     // find the bootcamps with sorting them depending on the req.query.sort
     // find the bootcamps to be selected
     const bootcamps = await query;
+
+    // pagination result
+    const pagination = {};
+
+    if (lastIndex < total) { // on est pas dans la dérniere page
+        pagination.next = {
+            page: page + 1,
+            limit
+        }
+    }
+
+    if (startIndex > 0) { // on est pas dans la premiere page
+        pagination.prev = {
+            page: page - 1,
+            limit
+        }
+    }
+
     res.status(200).json({
         success: true,
         count: bootcamps.length,
+        pagination,
         data: bootcamps
 
     });   
@@ -104,10 +133,11 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
     @access Private
 */
 exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
-    const bootcamp = await (Bootcamp.findByIdAndRemove(req.params.id));
+    const bootcamp = await Bootcamp.findById(req.params.id);
     if (!bootcamp) {
         return next(new ErrorResponse(`Bootcamp not found with id of ${req.params.id}`, 404));
     }
+    await bootcamp.deleteOne();
     res.status(200).json({
         success: true,
         data: {}
