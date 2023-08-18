@@ -25,8 +25,11 @@ if (process.env.NODE_ENV === 'development') {
 // // call logger middlware
 // app.use(logger);
 
-const routes = require('./routes/routes.js');
-app.use('/api/v1/bootcamps', routes);
+const bootcampsRoutes = require('./routes/bootcamps routes');
+const coursesRoutes = require('./routes/courses routes')
+app.use('/api/v1/bootcamps', bootcampsRoutes);
+app.use('/api/v1/courses', coursesRoutes);
+
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
