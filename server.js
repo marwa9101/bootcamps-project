@@ -2,9 +2,11 @@ const express = require('express');
 const dotEnv = require('dotenv');
 const logger = require('./middlwares/logger');
 const morgan = require('morgan');
-const connectDB = require('./config/db');
 const colors = require('colors');
+const fileupload = require('express-fileupload');
 const errorHandler = require('./middlwares/error');
+const connectDB = require('./config/db');
+const path = require('path');
 
 // Load env vars
 dotEnv.config({path: './config/config.env'});
@@ -21,6 +23,12 @@ app.use(express.json());
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
+
+// File uploading
+app.use(fileupload());
+
+// set static folder
+app.use(express.static(path.join(__dirname, 'public')));
 
 // // call logger middlware
 // app.use(logger);

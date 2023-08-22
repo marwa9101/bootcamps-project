@@ -6,8 +6,12 @@ const {
     createBootcamp,
     updateBootcamp,
     deleteBootcamp,
-    getBootcampWithinRadius
+    getBootcampWithinRadius,
+    uploadBootcampPhoto
 } = require('../controllers/bootcamps controller')
+
+const commonFunctions = require('../middlwares/commonFunctions');
+const Bootcamp = require('../models/Bootcamp Model');
 
 // Include other resource routers
 const coursesRouter = require('./courses routes');
@@ -15,11 +19,14 @@ const coursesRouter = require('./courses routes');
 // Re-route into other resource routers
 router.use('/:bootcampId/courses', coursesRouter);
 
+router.route('/:id/photo')
+    .put(uploadBootcampPhoto);
+
 router.route('/radius/:zipcode/:distance')
     .get(getBootcampWithinRadius);
 
 router.route('/')
-    .get(getBootcamps)
+    .get(commonFunctions(Bootcamp, 'courses'), getBootcamps) // a chaque fois ce route est appelé il y a un middleware qui est appelé aussi
     .post(createBootcamp);
 
 router.route('/:id')
