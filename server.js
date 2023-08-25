@@ -4,6 +4,7 @@ const logger = require('./middlwares/logger');
 const morgan = require('morgan');
 const colors = require('colors');
 const fileupload = require('express-fileupload');
+const cookieParser = require('cookie-parser');
 const errorHandler = require('./middlwares/error');
 const connectDB = require('./config/db');
 const path = require('path');
@@ -27,16 +28,21 @@ if (process.env.NODE_ENV === 'development') {
 // File uploading
 app.use(fileupload());
 
+// Cookie-parser
+app.use(cookieParser());
+
 // set static folder
 app.use(express.static(path.join(__dirname, 'public')));
 
-// // call logger middlware
+// call logger middlware
 // app.use(logger);
 
 const bootcampsRoutes = require('./routes/bootcamps routes');
-const coursesRoutes = require('./routes/courses routes')
+const coursesRoutes = require('./routes/courses routes');
+const authRoutes = require('./routes/auth routes');
 app.use('/api/v1/bootcamps', bootcampsRoutes);
 app.use('/api/v1/courses', coursesRoutes);
+app.use('/api/v1/auth', authRoutes)
 
 app.use(errorHandler);
 
