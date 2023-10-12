@@ -1,26 +1,26 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <header-component></header-component>
+  <the-bootcamps></the-bootcamps>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import HeaderComponent from './components/layouts/HeaderComponent.vue';
+import TheBootcamps from './components/bootcamps/TheBootcamps.vue';
 
 export default {
-  name: 'App',
   components: {
-    HelloWorld
-  }
-}
+    HeaderComponent,
+    TheBootcamps
+  },
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Raleway&display=swap');
+h2 {
+  font-family: 'Montserrat', sans-serif;
+}
+body {
+  font-family: 'Raleway', sans-serif;
 }
 </style>
