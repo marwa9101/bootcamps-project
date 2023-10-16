@@ -3,28 +3,19 @@
     <base-button
       @click="setSelectedTab('all-bootcamps')"
       :mode="allBootcampsBtnMode"
-      >Bootcamps</base-button
+      ><router-link to="/bootcamps" :class="allBootcampsBtnClicked">All bootcamps</router-link></base-button
     >
     <base-button
       @click="setSelectedTab('add-bootcamp')"
       :mode="addBootcampBtnMode"
-      >Add a bootcamp</base-button
+      ><router-link to="/new-bootcamp" :class="addBootcampBtnClicked">Add a bootcamp</router-link></base-button
     >
   </base-card>
-  <keep-alive>
-    <component :is='selectedTab'></component>
-  </keep-alive>
 </template>
 
 <script>
-import AllBootcamps from './AllBootcamps.vue';
-import AddBootcamp from './AddBootcamp.vue';
 
 export default {
-  components: {
-    AllBootcamps,
-    AddBootcamp,
-  },
   data() {
     return {
       selectedTab: '',
@@ -46,6 +37,12 @@ export default {
     addBootcampBtnMode() {
       return this.selectedTab === 'add-bootcamp' ? 'selected' : null;
     },
+    allBootcampsBtnClicked() {
+      return this.selectedTab === 'all-bootcamps' ? 'selected' : null;
+    },
+    addBootcampBtnClicked() {
+      return this.selectedTab === 'add-bootcamp' ? 'selected' : null;
+    }
   },
   methods: {
     setSelectedTab(tab) {
@@ -66,3 +63,19 @@ export default {
   },
 };
 </script>
+<style>
+a{
+  text-decoration: none;
+  color: #640032;
+  font-weight: 600;
+  font-size: 14px;
+}
+.selected {
+  color:white;
+  border-color: #640032;
+}
+
+a:hover {
+  color: white;
+}
+</style>

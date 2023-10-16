@@ -1,6 +1,7 @@
 <template>
   <header-component></header-component>
   <the-bootcamps></the-bootcamps>
+  <router-view></router-view>
 </template>
 
 <script>

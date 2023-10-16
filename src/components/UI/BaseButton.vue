@@ -31,11 +31,11 @@ button:active {
   background-image: linear-gradient(180deg, #ce5269, #640032);
   color: white;
 }
-
 .selected {
   background-image: linear-gradient(180deg, #ce5269, #640032);
   color: white;
   border: none;
+  text-decoration: none;
 }
 
 .submit-btn {

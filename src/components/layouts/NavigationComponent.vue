@@ -4,15 +4,16 @@
     <h3>{{ title }}</h3>
   </div>
   <div class="nav-right">
-    <a>Bootcamps</a>
-    <a>Courses</a>
-    <a>About us</a>
-    <a>Login</a>
+      <a>Bootcamps</a>
+      <a>Courses</a>
+      <a>About us</a>
+      <router-link to="/login"><a>Login</a></router-link>
+      <!-- <router-link to="/login">Login</router-link> -->
   </div>
 </template>
 <script>
 export default {
-  props: ['title']
+  props: ['title'],
 };
 </script>
 
@@ -34,7 +35,7 @@ export default {
 .nav-right {
   display: flex;
 }
-.nav-right a {
+a{
   margin-right: 80px; /* Ajoute de l'espace entre les liens */
   text-decoration: none; /* Supprime la décoration de lien par défaut */
   color: white; /* Couleur du texte des liens (ajustez selon vos préférences) */
