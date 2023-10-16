@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -37,6 +38,12 @@ const UserSchema = new mongoose.Schema({
 
 // encrypt password with bcrypt
 UserSchema.pre('save', async function(next) {
+    // si le password n'a pas été changé ne continue pas dans cette middleware
+    // quand le user demande un reset token password il repasse par ce middleware, alors que il n'y a pas de password => il genere un errerur
+    // c'est pour cela que j'ai ajouté cette condition
+    if (!this.isModified('password')) {
+        next();
+    }
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt)
 })
@@ -52,5 +59,19 @@ UserSchema.methods.getSignedJwtToken = function() {
 UserSchema.methods.matchPassword = async function(enteredPasssword) {
     return await bcrypt.compare(enteredPasssword, this.password)
 }
+
+// generate and hash password token
+UserSchema.methods.getResetPasswordToken = function() {
+    // generate token
+    const resetToken = crypto.randomBytes(20).toString('hex'); // 20 is the number of bytes to be generated
+    console.log(resetToken);
+
+    // hash token
+    this.resetPasswordToken = crypto.createHash('sha256')
+                                    .update(resetToken)
+                                    .digest('hex');
+    // set the expire
+    this.resetPasswordExpired = Date.now() + 10 * 60 * 1000;
+}   
 
 module.exports = mongoose.model('User', UserSchema);

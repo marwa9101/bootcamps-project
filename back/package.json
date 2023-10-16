@@ -11,7 +11,20 @@
     "core-js": "^3.8.3",
     "vue": "^3.2.13",
     "vue-router": "^4.0.13",
-    "vuetify": "^3.3.19"
+    "vuetify": "^3.3.19",
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
+    "colors": "^1.4.0",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-fileupload": "^1.4.0",
+    "jsonwebtoken": "^9.0.1",
+    "mongoose": "^7.4.1",
+    "morgan": "^1.10.0",
+    "node-geocoder": "^4.2.0",
+    "nodemailer": "^6.9.4",
+    "slugify": "^1.6.6"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
@@ -21,6 +34,5 @@
     "@vue/cli-service": "~5.0.0",
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3"
-
   }
 }
